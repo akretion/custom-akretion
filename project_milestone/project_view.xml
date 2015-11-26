@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+<record id="view_task_form2" model="ir.ui.view">
+    <field name="model">project.task</field>
+    <field name="inherit_id" ref="project.view_task_form2"/>
+    <field name="arch" type="xml">
+        <field name="categ_ids" position="after">
+            <field name="milestone_id"/>
+        </field>
+    </field>
+</record>
+
+<record id="action_view_milestone" model="ir.actions.act_window">
+    <field name="name">Milestones</field>
+    <field name="res_model">project.milestone</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<menuitem action="action_view_milestone"
+          id="menu_action_view_milestone"
+          parent="base.menu_definitions" sequence="10"/>
+
+<record forcecreate="True" id="ir_cron_project_milestone" model="ir.cron">
+    <field name="name">Milestone</field>
+    <field eval="True" name="active"/>
+    <field name="user_id" ref="base.user_root"/>
+    <field name="interval_number">1</field>
+    <field name="interval_type">weeks</field>
+    <field name="numbercall">-1</field>
+    <field eval="False" name="doall"/>
+    <field eval="'project.milestone'" name="model"/>
+    <field eval="'_recompute_milestones'" name="function"/>
+    <!--<field eval="'()'" name="args"/>-->
+</record>
+
+    </data>
+</openerp>
