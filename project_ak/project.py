@@ -92,11 +92,21 @@ class ProjectTask(models.Model):
 
     @api.multi
     def write(self, vals):
-        stage_provider = self.env.ref('project_ak.task_type_todo_provider').id
-        if vals.get('stage_id') == stage_provider:
+        stage_id = vals.get('stage_id')
+        todo_provider = self.env.ref('project_ak.task_type_todo_provider')
+        to_qualify = self.env.ref('project_ak.task_type_todo_internal')
+        todo_internal = self.env.ref('project_ak.task_type_todo_internal')
+
+        if stage_id == todo_provider.id:
                 vals['project_id'] = self.env.ref(
                     'project_ak.project_erp_provider'
                 ).id
+
+        elif stage_id in (to_qualify.id, todo_internal.id):
+                vals['project_id'] = self.env.ref(
+                    'project_ak.project_issue'
+                ).id
+
         res = super(ProjectTask, self).write(vals)
         self._set_issue_number()
         return res
