@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="1">
+
+<!--Task Types-->
+<record id="task_type_to_qualify" model="project.task.type">
+    <field name="name">A qualifier</field>
+    <field name="sequence" eval="1"/>
+    <field name="case_default" eval="0"/>
+    <field name="fold" eval="0"/>
+</record>
+<record id="task_type_todo_internal" model="project.task.type">
+    <field name="name">TODO interne</field>
+    <field name="sequence" eval="2"/>
+    <field name="case_default" eval="0"/>
+    <field name="fold" eval="0"/>
+</record>
+<record id="task_type_todo_provider" model="project.task.type">
+    <field name="name">TODO Akretion</field>
+    <field name="sequence" eval="3"/>
+    <field name="case_default" eval="0"/>
+    <field name="fold" eval="0"/>
+</record>
+<record id="task_type_in_progress" model="project.task.type">
+    <field name="name">En cours</field>
+    <field name="sequence" eval="4"/>
+    <field name="case_default" eval="0"/>
+    <field name="fold" eval="0"/>
+</record>
+<record id="task_type_in_test" model="project.task.type">
+    <field name="name">En test</field>
+    <field name="sequence" eval="5"/>
+    <field name="case_default" eval="0"/>
+    <field name="fold" eval="0"/>
+</record>
+<record id="task_type_deployed" model="project.task.type">
+    <field name="name">En production</field>
+    <field name="sequence" eval="6"/>
+    <field name="case_default" eval="0"/>
+    <field name="fold" eval="0"/>
+</record>
+
+
+<!-- Sequences -->
+
+<record id="seq_type_project_task_issue" model="ir.sequence.type">
+    <field name="name">Project Task Issue</field>
+    <field name="code">project.task.issue</field>
+</record>
+
+<record id="seq_project_task_issue" model="ir.sequence">
+    <field name="name">Project Task Issue</field>
+    <field name="code">project.task.issue</field>
+    <field name="prefix">ISSUE-</field>
+    <field name="padding">0</field>
+    <field name="company_id" eval="False"/>
+</record>
+
+<!-- Projects -->
+
+<record id="project_issue" model="project.project">
+    <field name="name">Issues</field>
+    <field name="active" eval="True"/>
+    <field name="state">open</field>
+    <field name="issue_sequence_id" ref="seq_project_task_issue"/>
+    <field name="type_ids" eval="[(4,ref('task_type_to_qualify')),(4,ref('task_type_todo_internal')),(4, ref('task_type_todo_provider')), (4, ref('task_type_deployed'))]"></field>
+    <field name="use_tasks" eval="1"/>
+</record>
+
+<record id="project_erp_provider" model="project.project">
+    <field name="name">Akretion</field>
+    <field name="use_tasks" eval="1"/>
+    <field name="type_ids" eval="[(4,ref('task_type_todo_provider')),(4,ref('task_type_in_progress')),(4,ref('task_type_in_test')),(4,ref('task_type_deployed'))]"></field>
+</record>
+
+
+    </data>
+</openerp>
