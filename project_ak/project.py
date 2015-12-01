@@ -61,12 +61,34 @@ class ProjectTask(models.Model):
         for stage in stages:
             fold[stage.id] = stage.fold or False
             result.append((stage.id, stage.name))
-
         return result, fold
 
     _group_by_full = {
         'stage_id': _read_group_stage_ids,
     }
+
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None,
+                   context=None, orderby=False, lazy=True):
+
+        result = super(ProjectTask, self).read_group(
+            domain, fields, groupby, offset=offset,
+            limit=limit, context=context, orderby=orderby, lazy=lazy
+        )
+
+        project_id = self._resolve_project_id_from_context()
+        res = []
+        if project_id:
+            project = self.env['project.project'].browse(project_id)
+            stage_ids = [stage.id for stage in project.type_ids]
+            for r in result:
+                if r['stage_id'][0] in stage_ids:
+                    res.append(r)
+                elif r['stage_id']
+        else:
+            res = result
+
+        return res
 
     @api.multi
     def _set_issue_number(self):
