@@ -30,7 +30,7 @@ Please refer to that module's description.
     'website': '',
     'license': 'AGPL-3',
     'depends': [
-        'project',
+        'project_milestone',
     ],
     'data': [
         'project_data.xml',
