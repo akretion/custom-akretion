@@ -31,8 +31,7 @@
     <field name="numbercall">-1</field>
     <field eval="False" name="doall"/>
     <field eval="'project.milestone'" name="model"/>
-    <field eval="'_recompute_milestones'" name="function"/>
-    <!--<field eval="'()'" name="args"/>-->
+    <field eval="'_update_milestone'" name="function"/>
 </record>
 
     </data>
