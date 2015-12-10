@@ -37,6 +37,7 @@ class ProjectTask(models.Model):
     issue_number = fields.Char('Issue number', size=64)
     display_name = fields.Char(string='Name',
                                compute='_compute_display_name')
+
     def _get_color(self, cr, uid, ids, field_name, args, context=None):
         result = {}
         for task in self.browse(cr, uid, ids, context=context):
