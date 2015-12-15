@@ -20,6 +20,18 @@
 
 from openerp import fields, api, models
 from openerp.osv import fields as oldfields
+from openerp.exceptions import Warning as UserError
+from openerp.tools.translate import _
+
+
+ISSUE_DESCRIPTION = u"""Ce qui ne va pas:
+---------------------------
+
+
+Voilà comment cela devrait fonctionner:
+-----------------------------------------------------------
+"""
+
 
 class ProjectProject(models.Model):
     _inherit = 'project.project'
@@ -37,6 +49,8 @@ class ProjectTask(models.Model):
     issue_number = fields.Char('Issue number', size=64)
     display_name = fields.Char(string='Name',
                                compute='_compute_display_name')
+    contact_mobile = fields.Char(string='Mobile', related='create_uid.mobile')
+    contact_email = fields.Char(string='Email', related='create_uid.email')
 
     def _get_color(self, cr, uid, ids, field_name, args, context=None):
         result = {}
@@ -121,10 +135,21 @@ class ProjectTask(models.Model):
             if not task.project_id:
                 continue
             sequence = task.project_id.issue_sequence_id
-            project_issue = self.env.ref('project_ak.project_issue')
+            project_issue = self.env.ref('project_ak.project_to_qualify')
             if task.project_id == project_issue and \
                     not task.issue_number and sequence:
                 task.issue_number = sequence_obj.next_by_id(sequence.id)
+
+    @api.model
+    def default_get(self, fields):
+        vals = super(ProjectTask, self).default_get(fields)
+        if 'from_action' in self._context:
+            project_to_qualify = self.env.ref('project_ak.project_to_qualify')
+            vals['project_id'] = project_to_qualify.id
+            vals['description'] = ISSUE_DESCRIPTION
+            vals['user_id'] = None
+            vals['create_uid'] = self._uid
+        return vals
 
     @api.model
     def create(self, vals):
@@ -134,6 +159,11 @@ class ProjectTask(models.Model):
 
     @api.multi
     def write(self, vals):
+        if (vals.get('stage_id')
+                and not self.env['res.users']\
+                    .has_group('project_ak.group_customer_manager')):
+            raise UserError(_('You can not change the state of the task'))
+
         if vals.get('project_id'):
             project_id = vals['project_id']
             for task in self:

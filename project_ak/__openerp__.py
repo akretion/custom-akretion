@@ -31,6 +31,7 @@ Please refer to that module's description.
     'license': 'AGPL-3',
     'depends': [
         'project_milestone',
+        'project_model_to_task',
     ],
     'data': [
         'project_data.xml',
