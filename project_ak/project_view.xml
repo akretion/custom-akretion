@@ -18,6 +18,18 @@
            </field>
         </record>
 
+        <record id="view_task_search_form" model="ir.ui.view">
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_search_form"/>
+            <field name="arch" type="xml">
+                <filter name="draft" position="after">
+                    <filter name="not_finish"
+                            string="Not Finish"
+                            domain="[('stage_id', 'not in', (%(task_type_done)d, %(task_type_cancel)d))]"/>
+                </filter>
+            </field>
+        </record>
+
         <record id="project_task_issue_form_view" model="ir.ui.view">
             <field name="model">project.task</field>
             <field name="inherit_id" ref="project.view_task_form2"/>
@@ -67,6 +79,7 @@
                         <group colspan="4">
                             <group>
                                 <field name="create_uid" readonly="1"/>
+                                <field name="create_date" readonly="1"/>
                                 <field name="contact_mobile" readonly="1"/>
                                 <field name="contact_email" readonly="1"/>
                                 <field name="user_id" readonly="1"/>
@@ -218,7 +231,8 @@
                 ref('project_rejected'),
                 ref('project_todo_customer'),
                 ref('project_erp_provider')],
-                'color_based_on': 'milestone'}"/>
+                'color_based_on': 'milestone',
+                'search_default_not_finish': True}"/>
            <field name="help" type="html">
                <p>
                   Here you can view your issues
@@ -279,7 +293,7 @@
                 ('project_id', 'in', (ref('project_todo_customer'), ref('project_erp_provider'))),
                 ('stage_id', '=', ref('task_type_to_qualify')),
                 ]"/>
-           <field name="context" eval="{'default_project_id': ref('project_to_qualify')}"/>
+           <field name="context" eval="{'default_project_id': ref('project_to_qualify'), 'search_default_not_finish': True}"/>
            <field name="help" type="html">
                <p>
                   Here you can view your issues
@@ -337,7 +351,7 @@
             <field name="view_mode">kanban,tree,form</field>
             <field name="search_view_id" ref="project.view_task_search_form"/>
             <field name="domain" eval="[('project_id', '=', ref('project_todo_customer'))]"/>
-            <field name="context" eval="{'default_project_id': ref('project_todo_customer'), 'color_based_on': 'milestone'}"/>
+            <field name="context" eval="{'default_project_id': ref('project_todo_customer'), 'color_based_on': 'milestone', 'search_default_not_finish': True}"/>
             <field name="help" type="html">
                 <p>
                    Here you can view your task
@@ -378,7 +392,7 @@
             <field name="view_mode">kanban,tree,form</field>
             <field name="search_view_id" ref="project.view_task_search_form"/>
             <field name="domain" eval="[('project_id', '=', ref('project_erp_provider'))]"/>
-            <field name="context" eval="{'default_project_id': ref('project_erp_provider'), 'color_based_on': 'milestone'}"/>
+            <field name="context" eval="{'default_project_id': ref('project_erp_provider'), 'color_based_on': 'milestone', 'search_default_not_finish': True}"/>
             <field name="help" type="html">
                 <p>
                   Here you can view your task
@@ -438,7 +452,7 @@
             <field name="view_mode">kanban,tree,form</field>
             <field name="search_view_id" ref="project.view_task_search_form"/>
             <field name="domain" eval="[('project_id', '=', ref('project_erp_provider'))]"/>
-            <field name="context" eval="{'default_project_id': ref('project_erp_provider')}"/>
+            <field name="context" eval="{'default_project_id': ref('project_erp_provider'), 'color_based_on': 'stage', 'search_default_not_finish': True}"/>
             <field name="help" type="html">
                 <p>
                   Here you can view your issues

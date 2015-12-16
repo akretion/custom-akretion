@@ -57,8 +57,10 @@ class ProjectTask(models.Model):
         for task in self.browse(cr, uid, ids, context=context):
             if context.get('color_based_on') == 'milestone':
                 result[task.id] = task.milestone_id.color
-            else:
+            elif context.get('color_based_on') == 'stage':
                 result[task.id] = task.stage_id.color
+            else:
+                result[task.id] = 0
         return result
 
     # Inheriting with new api seem not working...
