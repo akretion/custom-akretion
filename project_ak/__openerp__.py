@@ -35,8 +35,8 @@ Please refer to that module's description.
     ],
     'data': [
         'project_data.xml',
-        'project_view.xml',
         'security/group.xml',
+        'project_view.xml',
     ],
     'installable': True,
     'application': True,
