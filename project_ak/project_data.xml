@@ -10,16 +10,23 @@
     <field name="fold" eval="0"/>
     <field name="color" eval="2"/>
 </record>
+<record id="task_type_to_confirm" model="project.task.type">
+    <field name="name">A confirmer</field>
+    <field name="sequence" eval="2"/>
+    <field name="case_default" eval="0"/>
+    <field name="fold" eval="0"/>
+    <field name="color" eval="2"/>
+</record>
 <record id="task_type_planned" model="project.task.type">
     <field name="name">Plannifier</field>
-    <field name="sequence" eval="2"/>
+    <field name="sequence" eval="3"/>
     <field name="case_default" eval="0"/>
     <field name="fold" eval="0"/>
     <field name="color" eval="2"/>
 </record>
 <record id="task_type_in_progress" model="project.task.type">
     <field name="name">En cours</field>
-    <field name="sequence" eval="3"/>
+    <field name="sequence" eval="4"/>
     <field name="case_default" eval="0"/>
     <field name="fold" eval="0"/>
     <field name="color" eval="3"/>
@@ -94,6 +101,7 @@
     <field name="state">open</field>
     <field name="type_ids" eval="[(6, 0, [
         ref('task_type_to_qualify'),
+        ref('task_type_to_confirm'),
         ref('task_type_planned'),
         ref('task_type_in_progress'),
         ref('task_type_in_test'),
