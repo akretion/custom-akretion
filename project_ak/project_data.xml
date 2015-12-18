@@ -8,21 +8,21 @@
     <field name="sequence" eval="1"/>
     <field name="case_default" eval="0"/>
     <field name="fold" eval="0"/>
-    <field name="color" eval="2"/>
+    <field name="color" eval="0"/>
 </record>
 <record id="task_type_to_confirm" model="project.task.type">
     <field name="name">A confirmer</field>
     <field name="sequence" eval="2"/>
     <field name="case_default" eval="0"/>
     <field name="fold" eval="0"/>
-    <field name="color" eval="2"/>
+    <field name="color" eval="0"/>
 </record>
 <record id="task_type_planned" model="project.task.type">
     <field name="name">Plannifier</field>
     <field name="sequence" eval="3"/>
     <field name="case_default" eval="0"/>
     <field name="fold" eval="0"/>
-    <field name="color" eval="2"/>
+    <field name="color" eval="0"/>
 </record>
 <record id="task_type_in_progress" model="project.task.type">
     <field name="name">En cours</field>
@@ -36,14 +36,14 @@
     <field name="sequence" eval="5"/>
     <field name="case_default" eval="0"/>
     <field name="fold" eval="0"/>
-    <field name="color" eval="7"/>
+    <field name="color" eval="4"/>
 </record>
 <record id="task_type_done" model="project.task.type">
     <field name="name">Terminé</field>
     <field name="sequence" eval="6"/>
     <field name="case_default" eval="0"/>
     <field name="fold" eval="0"/>
-    <field name="color" eval="4"/>
+    <field name="color" eval="1"/>
 </record>
 <record id="task_type_cancel" model="project.task.type">
     <field name="name">Annuler</field>
