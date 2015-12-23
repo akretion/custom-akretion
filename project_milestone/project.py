@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 class ProjectMilestone(models.Model):
     _name = 'project.milestone'
     _description = "Milestone"
+    _order = "deadline"
 
     name = fields.Char()
     deadline = fields.Date()
