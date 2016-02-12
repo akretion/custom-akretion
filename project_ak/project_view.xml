@@ -506,5 +506,71 @@
             groups="group_customer_manager"
             sequence="50"/>
 
+        <!-- Task work view  -->
+
+        <record id="view_task_work_search" model="ir.ui.view">
+            <field name="model">project.task.work</field>
+            <field name="arch" type="xml">
+                <search string="Task work">
+                    <field name="name"/>
+                    <field name="invoice_number"/>
+                    <filter string="To invoice" name="to_invoice" domain="[('invoice_number', '=', False)]"/>
+                    <separator/>
+                    <field name="user_id" string="Done by"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Manager" name="Done by" context="{'group_by':'user_id'}"/>
+                        <filter string="Month" context="{'group_by':'date:month'}" help="Work Date"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_task_work_erp_provider_tree" model="ir.ui.view">
+            <field name="model">project.task.work</field>
+            <field name="arch" type="xml">
+                <tree string="Task Work">
+                    <field name="date"/>
+                    <field name="task_id"/>
+                    <field name="name"/>
+                    <field name="hours" widget="float_time" sum="Worked Time"/>
+                    <field name="user_id" context="{'default_groups_ref': ['base.group_user', 'project.group_project_user']}"/>
+                    <field name="invoice_number"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_view_task_work" model="ir.actions.act_window">
+            <field name="name">Time spent</field>
+            <field name="res_model">project.task.work</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_task_work_search"/>
+            <field name="domain" eval="[]"/>
+            <field name="context" eval="{'search_default_to_invoice': True}"/>
+            <field name="help" type="html">
+                <p>
+                  Here you can view the time spent on tasks
+                </p>
+            </field>
+        </record>
+
+        <record id="open_view_task_work_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_task_work_erp_provider_tree"/>
+            <field name="act_window_id" ref="action_view_task_work"/>
+        </record>
+
+        <record id="open_view_task_work_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="project.view_task_work_form"/>
+            <field name="act_window_id" ref="action_view_task_work"/>
+        </record>
+
+        <menuitem action="action_view_task_work"
+            id="menu_action_view_task_work"
+            parent="erp_project"
+            groups="group_customer_manager"
+            sequence="60"/>
     </data>
 </openerp>

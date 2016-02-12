@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+<record id="view_invoice_work_wizard" model="ir.ui.view">
+    <field name="name">Invoice task work</field>
+    <field name="model">invoice.work</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+        <form string="Task work to be invoiced">
+            <group string="Work done">
+                <field name="work_line_ids" readonly="1" nolabel="1">
+                    <tree>
+                        <field name="user_id"/>
+                        <field name="work_amount"/>
+                    </tree>
+                </field>
+            </group>
+            <group>
+                <field name="invoice_number" required="1"/>
+            </group>
+            <footer>
+                <button icon='gtk-cancel' special="cancel" string="Cancel"/>
+                <button name="invoice_work" string="Invoice work"
+                    type="object" icon="gtk-ok"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+<act_window name="Invoice work"
+    res_model="invoice.work"
+    src_model="project.task.work"
+    view_mode="form"
+    target="new"
+    key2="client_action_multi"
+    id="action_invoice_task_work"
+    groups="project_ak.group_provider"/>
+
+    </data>
+</openerp>
