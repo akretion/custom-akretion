@@ -37,6 +37,7 @@ Please refer to that module's description.
         'project_data.xml',
         'security/group.xml',
         'project_view.xml',
+        'wizard/invoice_work_view.xml',
     ],
     'installable': True,
     'application': True,

@@ -192,3 +192,10 @@ class ProjectTaskType(models.Model):
     _inherit = 'project.task.type'
 
     color = fields.Integer()
+
+
+class ProjectTaskWork(models.Model):
+    _inherit = "project.task.work"
+
+    date = fields.Date(default=fields.Date.today())
+    invoice_number = fields.Char()
