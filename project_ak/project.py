@@ -30,8 +30,8 @@ class ProjectTask(models.Model):
     issue_number = fields.Char('Issue number', size=64)
     display_name = fields.Char(string='Name',
                                compute='_compute_display_name')
-    contact_mobile = fields.Char(string='Mobile', related='create_uid.mobile')
-    contact_email = fields.Char(string='Email', related='create_uid.email')
+    # contact_mobile = fields.Char(string='Mobile', related='create_uid.mobile')
+    # contact_email = fields.Char(string='Email', related='create_uid.email')
     color = fields.Integer(string='Color', compute='_compute_color')
 
     @api.depends('color')
