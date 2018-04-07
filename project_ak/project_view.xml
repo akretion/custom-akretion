@@ -238,6 +238,73 @@
      </field>
   </record> -->
 
+  <record id="action_view_task_erp_project_list" model="ir.actions.act_window">
+     <field name="name">Liste incidents ERP</field>
+     <field name="res_model">project.task</field>
+     <field name="view_mode">tree,kanban,form</field>
+     <field name="search_view_id" ref="project.view_task_search_form"/>
+     <field name="domain" eval="[('issue_number','!=','')]"/>
+     <field name="context" eval="{
+          'color_based_on': 'milestone',
+          'search_default_not_finish': True}"/>
+     <field name="help" type="html">
+         <p>
+            Here you can view your issues
+         </p>
+     </field>
+  </record>
+
+  <record id="action_view_task_erp_project_kanban" model="ir.actions.act_window">
+     <field name="name">kanban incidents ERP</field>
+     <field name="res_model">project.task</field>
+     <field name="view_mode">kanban,tree,form</field>
+     <field name="search_view_id" ref="project.view_task_search_form"/>
+     <field name="domain" eval="[('issue_number','!=','')]"/>
+     <field name="context" eval="{
+          'color_based_on': 'milestone',
+          'search_default_not_finish': True}"/>
+     <field name="help" type="html">
+         <p>
+            Here you can view your issues
+         </p>
+     </field>
+  </record>
+
+<!-- 
+  <record id="open_view_task_issue_kanban" model="ir.actions.act_window.view">
+      <field name="sequence" eval="0"/>
+      <field name="view_mode">kanban</field>
+      <field name="view_id" ref="project_task_issue_kanban_view"/>
+      <field name="act_window_id" ref="action_view_task_issue"/>
+  </record> -->
+
+  <record id="open_view_task_erp_project_tree" model="ir.actions.act_window.view">
+      <field name="sequence" eval="1"/>
+      <field name="view_mode">tree</field>
+      <field name="view_id" ref="project_task_issue_tree_view"/>
+      <field name="act_window_id" ref="action_view_task_erp_project_list"/>
+  </record>
+<!-- 
+  <record id="open_view_task_issue_form" model="ir.actions.act_window.view">
+      <field name="sequence" eval="2"/>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="project_task_issue_form"/>
+      <field name="act_window_id" ref="action_view_task_issue"/>
+  </record> -->
+
+  <menuitem action="action_view_task_erp_project_list"
+     id="menu_view_task_erp_project_"
+     parent="erp_project"
+     sequence="5"/>
+
+  <menuitem action="action_view_task_erp_project_kanban"
+     id="menu_view_task_erp_project"
+     parent="erp_project"
+     sequence="6"/>
+
+<!-- DEPRECATED -->
+
+
   <record id="action_view_task_issue" model="ir.actions.act_window">
      <field name="name">Suivi Incident</field>
      <field name="res_model">project.task</field>
@@ -257,6 +324,7 @@
          </p>
      </field>
   </record>
+
 <!-- 
   <record id="open_view_task_issue_kanban" model="ir.actions.act_window.view">
       <field name="sequence" eval="0"/>
@@ -278,12 +346,12 @@
       <field name="view_id" ref="project_task_issue_form"/>
       <field name="act_window_id" ref="action_view_task_issue"/>
   </record> -->
-
+<!-- 
   <menuitem action="action_view_task_issue"
      id="menu_action_view_task_issue"
      parent="erp_project"
      sequence="10"/>
-
+ -->
   <!-- Project Qualify Kanban View -->
 <!--   <record model="ir.ui.view" id="view_task_qualify_kanban">
       <field name="model">project.task</field>
@@ -340,12 +408,12 @@
       <field name="act_window_id" ref="action_view_task_qualify"/>
   </record>
  -->
-  <menuitem action="action_view_task_qualify"
+<!--   <menuitem action="action_view_task_qualify"
       id="menu_action_view_task_qualify"
       parent="erp_project"
       groups="group_customer_manager"
       sequence="20"/>
-
+ -->
 
   <!-- Project Task per project Kanban View -->
 
@@ -399,12 +467,12 @@
       <field name="act_window_id" ref="action_view_task_customer"/>
   </record> -->
 
-  <menuitem action="action_view_task_customer"
+<!--   <menuitem action="action_view_task_customer"
       id="menu_action_view_task_customer"
       parent="erp_project"
       groups="group_customer_manager"
       sequence="30"/>
-
+ -->
   <record id="action_view_task_erp_provider" model="ir.actions.act_window">
       <field name="name">Tache Akretion</field>
       <field name="res_model">project.task</field>
@@ -440,11 +508,12 @@
       <field name="act_window_id" ref="action_view_task_erp_provider"/>
   </record> -->
 
-  <menuitem action="action_view_task_erp_provider"
+<!--   <menuitem action="action_view_task_erp_provider"
       id="menu_action_view_task_erp_provider"
       parent="erp_project"
       groups="group_customer_manager"
       sequence="40"/>
+ -->
 
   <!-- Project ERP Provider Planning Kanban View -->
 <!--   <record model="ir.ui.view" id="view_task_planning_kanban">
@@ -500,10 +569,10 @@
       <field name="act_window_id" ref="action_view_task_planning_erp_provider"/>
   </record>
  -->
-  <menuitem action="action_view_task_planning_erp_provider"
+<!--   <menuitem action="action_view_task_planning_erp_provider"
       id="menu_action_view_task_planning_erp_provider"
       parent="erp_project"
       groups="group_customer_manager"
       sequence="50"/>
-
+ -->
 </odoo>
