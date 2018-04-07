@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<openerp>
-    <data>
+<odoo>
 
+<!-- 
 <record id="view_task_form2" model="ir.ui.view">
     <field name="model">project.task</field>
     <field name="inherit_id" ref="project.view_task_form2"/>
@@ -10,7 +10,7 @@
             <field name="milestone_id"/>
         </field>
     </field>
-</record>
+</record> -->
 
 <record id="action_view_milestone" model="ir.actions.act_window">
     <field name="name">Milestones</field>
@@ -18,10 +18,10 @@
     <field name="view_mode">tree,form</field>
 </record>
 
-<menuitem action="action_view_milestone"
+<!-- <menuitem action="action_view_milestone"
           id="menu_action_view_milestone"
           parent="base.menu_definitions" sequence="10"/>
-
+ -->
 <record forcecreate="True" id="ir_cron_project_milestone" model="ir.cron">
     <field name="name">Milestone</field>
     <field eval="True" name="active"/>
@@ -34,5 +34,5 @@
     <field eval="'_update_milestone'" name="function"/>
 </record>
 
-    </data>
-</openerp>
+
+</odoo>

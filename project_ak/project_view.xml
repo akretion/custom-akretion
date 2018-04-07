@@ -1,576 +1,509 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
+<odoo>
 
-        <menuitem
-            id="erp_project"
-            name="Project ERP"
-            parent="base.menu_main_pm"
-            sequence="2"/>
+  <menuitem
+      id="erp_project"
+      name="Project ERP"
+      parent="project.menu_main_pm"
+      sequence="2"/>
 
-        <record id="project_project_form_view" model="ir.ui.view">
-            <field name="model">project.project</field>
-            <field name="inherit_id" ref="project.edit_project"/>
-            <field name="arch" type="xml">
-                <field name="parent_id" position="after">
-                    <field name="issue_sequence_id"/>
-                </field>
-           </field>
-        </record>
+  <record id="project_project_form_view" model="ir.ui.view">
+      <field name="model">project.project</field>
+      <field name="inherit_id" ref="project.edit_project"/>
+      <field name="arch" type="xml">
+          <field name="use_tasks" position="after">
+              <field name="issue_sequence_id"/>
+          </field>
+     </field>
+  </record>
 
-        <record id="view_task_search_form" model="ir.ui.view">
-            <field name="model">project.task</field>
-            <field name="inherit_id" ref="project.view_task_search_form"/>
-            <field name="arch" type="xml">
-                <filter name="draft" position="after">
-                    <filter name="not_finish"
-                            string="Not Finish"
-                            domain="[('stage_id', 'not in', (%(task_type_done)d, %(task_type_cancel)d))]"/>
-                </filter>
-            </field>
-        </record>
+  <record id="view_task_search_form" model="ir.ui.view">
+      <field name="model">project.task</field>
+      <field name="inherit_id" ref="project.view_task_search_form"/>
+      <field name="arch" type="xml">
+          <filter name="draft" position="after">
+              <filter name="not_finish"
+                      string="Not Finish"
+                      domain="[('stage_id', 'not in', (%(task_type_done)d, %(task_type_cancel)d))]"/>
+          </filter>
+      </field>
+  </record>
 
-        <record id="project_task_issue_form_view" model="ir.ui.view">
-            <field name="model">project.task</field>
-            <field name="inherit_id" ref="project.view_task_form2"/>
-            <field name="arch" type="xml">
-               <form position="attributes">
-                   <attribute name="create">0</attribute>
-               </form>
-                <field name="name" position="before">
-                    <field name="issue_number" readonly="1"/>
-                </field>
-                <field name="reviewer_id" position="after">
-                    <field name="issue_tracker_url"/>
-                </field>
-            </field>
-        </record>
+  <record id="project_task_issue_form_view" model="ir.ui.view">
+      <field name="model">project.task</field>
+      <field name="inherit_id" ref="project.view_task_form2"/>
+      <field name="arch" type="xml">
+         <form position="attributes">
+             <attribute name="create">0</attribute>
+         </form>
+          <field name="name" position="before">
+              <field name="issue_number" readonly="1"/>
+          </field>
+<!--           <field name="reviewer_id" position="after">
+              <field name="issue_tracker_url"/>
+          </field> -->
+      </field>
+  </record>
 
-        <record id="view_custom_task_form" model="ir.ui.view">
-            <field name="model">project.task</field>
-            <field eval="2" name="priority"/>
-            <field name="arch" type="xml">
-                <form string="Project">
-                    <header>
-                        <field name="stage_id" widget="statusbar" clickable="True"
-                            options="{'fold_field': 'fold'}"/>
-                    </header>
-                    <sheet string="Task">
-                        <h1>
-                            <field name="issue_number" readonly="1" colspan="4"/>
-                            <field name="name" placeholder="Task summary..." class="oe_inline" colspan="4"/>
-                        </h1>
-                        <field name="categ_ids"
-                               widget="many2many_tags"
-                               attrs="{'required': [('project_id', 'in', (%(project_to_qualify)d, %(project_erp_provider)d))]}"
-                            />
-                        <div class="oe_edit_only oe_right"
-                             attrs="{'invisible': [('project_id', 'not in',
-                                (%(project_to_qualify)d, %(project_erp_provider)d))]}">
-                            <u title="Passez votre souris au-dessus des termes suivants pour consuler l'aide">
-                                Aide sélection étiquettes</u>:
-                            <span title="Les responsables internes doivent corriger">Donnée_erronée</span> |
-                            <span title="requiert d'autres avis pour décider si la solution proposée est valide">
-                                Evaluer</span> |
-                            <span title="ne correspond pas à ce que le vous souhaitez ou nouvelle demande">
-                                Demande</span> |
-                            <span title="ne fonctionne pas comme Akretion l'a prévu">Bug</span>
-                        </div>
-                        <group colspan="4">
-                            <group>
-                                <field name="create_uid" readonly="1"/>
-                                <field name="create_date" readonly="1"/>
-                                <field name="contact_mobile" readonly="1"/>
-                                <field name="contact_email" readonly="1"/>
-                                <field name="user_id" readonly="1"/>
-                            </group>
-                            <group>
-                                <field name="model_reference" invisible="1"/>
-                                <label for="task_origin"
-                                       attrs="{'invisible': ['|',
-                                                             ('model_reference', '=', False),
-                                                             ('name', '=', False)]}"/>
-                                <span>
-                                    <field name="task_origin"
-                                           attrs="{'invisible': ['|',
-                                                                 ('model_reference', '=', False),
-                                                                 ('name', '=', False)]}"/>
-                                    <button name="goto_document" type="object" string="Open"
-                                            attrs="{'invisible': [('model_reference', '=', False)]}"
-                                            class="oe_read_only" colspan="1"
-                                            help="Go to the window from which the task has been defined."/>
-                                </span>
-                            </group>
-                        </group>
-                        <group groups="project_ak.group_customer_manager" colspan="4">
-                            <group>
+<!--   <record id="view_custom_task_form" model="ir.ui.view">
+      <field name="model">project.task</field>
+      <field eval="2" name="priority"/>
+      <field name="arch" type="xml">
+          <form string="Project">
+              <header>
+                  <field name="stage_id" widget="statusbar" clickable="True"
+                      options="{'fold_field': 'fold'}"/>
+              </header>
+              <sheet string="Task">
+                  <h1>
+                      <field name="issue_number" readonly="1" colspan="4"/>
+                      <field name="name" placeholder="Task summary..." class="oe_inline" colspan="4"/>
+                  </h1>
+                  <field name="categ_ids"
+                         widget="many2many_tags"
+                         attrs="{'required': [('project_id', 'in', (%(project_to_qualify)d, %(project_erp_provider)d))]}"
+                      />
+                  <div class="oe_edit_only oe_right"
+                       attrs="{'invisible': [('project_id', 'not in',
+                          (%(project_to_qualify)d, %(project_erp_provider)d))]}">
+                      <u title="Passez votre souris au-dessus des termes suivants pour consuler l'aide">
+                          Aide sélection étiquettes</u>:
+                      <span title="Les responsables internes doivent corriger">Donnée_erronée</span> |
+                      <span title="requiert d'autres avis pour décider si la solution proposée est valide">
+                          Evaluer</span> |
+                      <span title="ne correspond pas à ce que le vous souhaitez ou nouvelle demande">
+                          Demande</span> |
+                      <span title="ne fonctionne pas comme Akretion l'a prévu">Bug</span>
+                  </div>
+                  <group colspan="4">
+                      <group>
+                          <field name="create_uid" readonly="1"/>
+                          <field name="create_date" readonly="1"/>
+                          <field name="contact_mobile" readonly="1"/>
+                          <field name="contact_email" readonly="1"/>
+                          <field name="user_id" readonly="1"/>
+                      </group>
+                      <group>
+                          <field name="model_reference" invisible="1"/>
+                          <label for="task_origin"
+                                 attrs="{'invisible': ['|',
+                                                       ('model_reference', '=', False),
+                                                       ('name', '=', False)]}"/>
+                          <span>
+                              <field name="task_origin"
+                                     attrs="{'invisible': ['|',
+                                                           ('model_reference', '=', False),
+                                                           ('name', '=', False)]}"/>
+                              <button name="goto_document" type="object" string="Open"
+                                      attrs="{'invisible': [('model_reference', '=', False)]}"
+                                      class="oe_read_only" colspan="1"
+                                      help="Go to the window from which the task has been defined."/>
+                          </span>
+                      </group>
+                  </group>
+                  <group groups="project_ak.group_customer_manager" colspan="4">
+                      <group>
 
-                                <field name="project_id"
-                                       domain="[('state','not in', ('close', 'cancelled'))]"
-                                       on_change="onchange_project(project_id)"
-                                       context="{'default_use_tasks':1}"/>
-                                <field name="reviewer_id"
-                                       options='{"no_open": True}'/>
-                                <field name="planned_hours" widget="float_time"
-                                       on_change="onchange_planned(planned_hours, effective_hours)"/>
-                            </group>
-                            <group>
-                                <field name="date_deadline"
-                                       on_change="onchange_date_deadline(date_end, date_deadline)"/>
-                                <field name="date_end" invisible="1"/>
-                                <field name="priority" widget="priority"/>
-                                <field name="progress" widget="progressbar"
-                                       groups="project.group_time_work_estimation_tasks"/>
-                            </group>
-                        </group>
-                        <notebook>
-                            <page string="Description">
-                                <field name="description" placeholder="Add a Description..."/>
-                                <field name="work_ids" groups="project.group_tasks_work_on_tasks">
-                                    <tree string="Task Work" editable="top">
-                                        <field name="name"/>
-                                        <field name="hours" widget="float_time" sum="Spent Hours"/>
-                                        <field name="date"/>
-                                        <field name="user_id"
-                                               context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'project.group_project_user']}"/>
-                                    </tree>
-                                </field>
-                                <group>
-                                    <group class="oe_subtotal_footer oe_right" name="project_hours" groups="project.group_time_work_estimation_tasks">
-                                        <field name="effective_hours" widget="float_time"/>
-                                        <label for="remaining_hours" string="Remaining" groups="project.group_time_work_estimation_tasks"/>
-                                        <div>
-                                            <field name="remaining_hours" widget="float_time" groups="project.group_time_work_estimation_tasks"/>
-                                        </div>
-                                        <field name="total_hours" widget="float_time" class="oe_subtotal_footer_separator"/>
-                                     </group>
-                                </group>
-                                <div class="oe_clear"/>
-                            </page>
-                        </notebook>
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
-                        <field name="message_ids" widget="mail_thread"/>
-                    </div>
-                </form>
-            </field>
-        </record>
+                          <field name="project_id"
+                                 domain="[('state','not in', ('close', 'cancelled'))]"
+                                 on_change="onchange_project(project_id)"
+                                 context="{'default_use_tasks':1}"/>
+                          <field name="reviewer_id"
+                                 options='{"no_open": True}'/>
+                          <field name="planned_hours" widget="float_time"
+                                 on_change="onchange_planned(planned_hours, effective_hours)"/>
+                      </group>
+                      <group>
+                          <field name="date_deadline"
+                                 on_change="onchange_date_deadline(date_end, date_deadline)"/>
+                          <field name="date_end" invisible="1"/>
+                          <field name="priority" widget="priority"/>
+                          <field name="progress" widget="progressbar"
+                                 groups="project.group_time_work_estimation_tasks"/>
+                      </group>
+                  </group>
+                  <notebook>
+                      <page string="Description">
+                          <field name="description" placeholder="Add a Description..."/>
+                          <field name="work_ids" groups="project.group_tasks_work_on_tasks">
+                              <tree string="Task Work" editable="top">
+                                  <field name="name"/>
+                                  <field name="hours" widget="float_time" sum="Spent Hours"/>
+                                  <field name="date"/>
+                                  <field name="user_id"
+                                         context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'project.group_project_user']}"/>
+                              </tree>
+                          </field>
+                          <group>
+                              <group class="oe_subtotal_footer oe_right" name="project_hours" groups="project.group_time_work_estimation_tasks">
+                                  <field name="effective_hours" widget="float_time"/>
+                                  <label for="remaining_hours" string="Remaining" groups="project.group_time_work_estimation_tasks"/>
+                                  <div>
+                                      <field name="remaining_hours" widget="float_time" groups="project.group_time_work_estimation_tasks"/>
+                                  </div>
+                                  <field name="total_hours" widget="float_time" class="oe_subtotal_footer_separator"/>
+                               </group>
+                          </group>
+                          <div class="oe_clear"/>
+                      </page>
+                  </notebook>
+              </sheet>
+              <div class="oe_chatter">
+                  <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                  <field name="message_ids" widget="mail_thread"/>
+              </div>
+          </form>
+      </field>
+  </record> -->
 
-        <record id="manager_view_custom_task_form" model="ir.ui.view">
-            <field name="model">project.task</field>
-            <field name="inherit_id" ref="view_custom_task_form"/>
-            <field name="groups_id" eval="[(6, 0, [ref('project_ak.group_customer_manager')])]"/>
-            <field name="arch" type="xml">
-                <field name="user_id" position="attributes">
-                    <attribute name="readonly">False</attribute>
-                </field>
-            </field>
-        </record>
+<!--   <record id="manager_view_custom_task_form" model="ir.ui.view">
+      <field name="model">project.task</field>
+      <field name="inherit_id" ref="view_custom_task_form"/>
+      <field name="groups_id" eval="[(6, 0, [ref('project_ak.group_customer_manager')])]"/>
+      <field name="arch" type="xml">
+          <field name="user_id" position="attributes">
+              <attribute name="readonly">False</attribute>
+          </field>
+      </field>
+  </record>
 
-       <record id="project_task_issue_form" model="ir.ui.view">
-            <field name="model">project.task</field>
-            <field name="inherit_id" ref="view_custom_task_form"/>
-            <field eval="32" name="priority"/>
-            <field name="mode">primary</field>
-            <field name="arch" type="xml">
-                <form position="attributes">
-                   <attribute name="create">0</attribute>
-               </form>
-           </field>
-       </record>
+  <record id="project_task_issue_form" model="ir.ui.view">
+      <field name="model">project.task</field>
+      <field name="inherit_id" ref="view_custom_task_form"/>
+      <field eval="32" name="priority"/>
+      <field name="mode">primary</field>
+      <field name="arch" type="xml">
+          <form position="attributes">
+             <attribute name="create">0</attribute>
+         </form>
+     </field>
+  </record> -->
 
-       <record id="view_task_tree2" model="ir.ui.view">
-           <field name="model">project.task</field>
-           <field name="inherit_id" ref="project.view_task_tree2"/>
-           <field name="arch" type="xml">
-               <field name="name" position="replace">
-                   <field name="display_name" readonly="1"/>
-               </field>
-           </field>
-       </record>
+  <record id="view_task_tree2" model="ir.ui.view">
+     <field name="model">project.task</field>
+     <field name="inherit_id" ref="project.view_task_tree2"/>
+     <field name="arch" type="xml">
+         <field name="name" position="replace">
+             <field name="display_name" readonly="1"/>
+         </field>
+     </field>
+  </record>
 
-       <record id="project_task_issue_tree_view" model="ir.ui.view">
-           <field name="model">project.task</field>
-           <field name="inherit_id" ref="view_task_tree2"/>
-           <field name="arch" type="xml">
-               <tree position="attributes">
-                   <attribute name="create">0</attribute>
-               </tree>
-           </field>
-       </record>
+  <record id="project_task_issue_tree_view" model="ir.ui.view">
+     <field name="model">project.task</field>
+     <field name="inherit_id" ref="view_task_tree2"/>
+     <field name="arch" type="xml">
+         <tree position="attributes">
+             <attribute name="create">0</attribute>
+         </tree>
+     </field>
+  </record>
 
-       <record id="view_task_kanban" model="ir.ui.view">
-           <field name="model">project.task</field>
-           <field name="inherit_id" ref="project.view_task_kanban"/>
-           <field name="arch" type="xml">
-               <field name="name" position="replace">
-                   <field name="display_name" readonly="1"/>
-               </field>
-               <field name="remaining_hours" position="attributes">
-                   <attribute name="groups">project_ak.group_customer_manager</attribute>
-               </field>
-               <span title="Remaining hours" position="attributes">
-                   <attribute name="groups">project_ak.group_customer_manager</attribute>
-               </span>
-               <field name="user_id" position="after">
-                   <field name="create_uid"/>
-                   <field name="create_date"/>
-               </field>
-               <xpath expr="//div/field[@name='project_id']" position="after">
-                   <br/>
-                   <field name="create_uid"/> : <field name="create_date"/><br/>
-               </xpath>
-           </field>
-       </record>
+<!--   <record id="view_task_kanban" model="ir.ui.view">
+     <field name="model">project.task</field>
+     <field name="inherit_id" ref="project.view_task_kanban"/>
+     <field name="arch" type="xml">
+         <field name="name" position="replace">
+             <field name="display_name" readonly="1"/>
+         </field>
+         <field name="remaining_hours" position="attributes">
+             <attribute name="groups">project_ak.group_customer_manager</attribute>
+         </field>
+         <span title="Remaining hours" position="attributes">
+             <attribute name="groups">project_ak.group_customer_manager</attribute>
+         </span>
+         <field name="user_id" position="after">
+             <field name="create_uid"/>
+             <field name="create_date"/>
+         </field>
+         <xpath expr="//div/field[@name='project_id']" position="after">
+             <br/>
+             <field name="create_uid"/> : <field name="create_date"/><br/>
+         </xpath>
+     </field>
+  </record>
+ -->
+<!--   <record id="project_task_issue_kanban_view" model="ir.ui.view">
+     <field name="model">project.task</field>
+     <field name="inherit_id" ref="view_task_kanban"/>
+     <field name="mode">primary</field>
+     <field name="arch" type="xml">
+         <kanban position="attributes">
+             <attribute name="create">0</attribute>
+             <attribute name="edit">0</attribute>
+             <attribute name="quick_create">0</attribute>
+         </kanban>
+         <field name="stage_id" position="replace">
+         </field>
+     </field>
+  </record> -->
 
-       <record id="project_task_issue_kanban_view" model="ir.ui.view">
-           <field name="model">project.task</field>
-           <field name="inherit_id" ref="view_task_kanban"/>
-           <field name="mode">primary</field>
-           <field name="arch" type="xml">
-               <kanban position="attributes">
-                   <attribute name="create">0</attribute>
-                   <attribute name="edit">0</attribute>
-                   <attribute name="quick_create">0</attribute>
-               </kanban>
-               <field name="stage_id" position="replace">
-               </field>
-           </field>
-       </record>
+  <record id="action_view_task_issue" model="ir.actions.act_window">
+     <field name="name">Suivi Incident</field>
+     <field name="res_model">project.task</field>
+     <field name="view_mode">kanban,tree,form</field>
+     <field name="search_view_id" ref="project.view_task_search_form"/>
+     <field name="domain" eval="[('issue_number','!=','')]"/>
+     <field name="context" eval="{'visible_project_ids': [
+          ref('project_to_qualify'),
+          ref('project_rejected'),
+          ref('project_todo_customer'),
+          ref('project_erp_provider')],
+          'color_based_on': 'milestone',
+          'search_default_not_finish': True}"/>
+     <field name="help" type="html">
+         <p>
+            Here you can view your issues
+         </p>
+     </field>
+  </record>
+<!-- 
+  <record id="open_view_task_issue_kanban" model="ir.actions.act_window.view">
+      <field name="sequence" eval="0"/>
+      <field name="view_mode">kanban</field>
+      <field name="view_id" ref="project_task_issue_kanban_view"/>
+      <field name="act_window_id" ref="action_view_task_issue"/>
+  </record> -->
 
-       <record id="action_view_task_issue" model="ir.actions.act_window">
-           <field name="name">Suivi Incident</field>
-           <field name="res_model">project.task</field>
-           <field name="view_mode">kanban,tree,form</field>
-           <field name="search_view_id" ref="project.view_task_search_form"/>
-           <field name="domain" eval="[('issue_number','!=','')]"/>
-           <field name="context" eval="{'visible_project_ids': [
-                ref('project_to_qualify'),
-                ref('project_rejected'),
-                ref('project_todo_customer'),
-                ref('project_erp_provider')],
-                'color_based_on': 'milestone',
-                'search_default_not_finish': True}"/>
-           <field name="help" type="html">
-               <p>
-                  Here you can view your issues
-               </p>
-           </field>
-       </record>
+  <record id="open_view_task_issue_tree" model="ir.actions.act_window.view">
+      <field name="sequence" eval="1"/>
+      <field name="view_mode">tree</field>
+      <field name="view_id" ref="project_task_issue_tree_view"/>
+      <field name="act_window_id" ref="action_view_task_issue"/>
+  </record>
+<!-- 
+  <record id="open_view_task_issue_form" model="ir.actions.act_window.view">
+      <field name="sequence" eval="2"/>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="project_task_issue_form"/>
+      <field name="act_window_id" ref="action_view_task_issue"/>
+  </record> -->
 
-        <record id="open_view_task_issue_kanban" model="ir.actions.act_window.view">
-            <field name="sequence" eval="0"/>
-            <field name="view_mode">kanban</field>
-            <field name="view_id" ref="project_task_issue_kanban_view"/>
-            <field name="act_window_id" ref="action_view_task_issue"/>
-        </record>
+  <menuitem action="action_view_task_issue"
+     id="menu_action_view_task_issue"
+     parent="erp_project"
+     sequence="10"/>
 
-        <record id="open_view_task_issue_tree" model="ir.actions.act_window.view">
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="project_task_issue_tree_view"/>
-            <field name="act_window_id" ref="action_view_task_issue"/>
-        </record>
+  <!-- Project Qualify Kanban View -->
+<!--   <record model="ir.ui.view" id="view_task_qualify_kanban">
+      <field name="model">project.task</field>
+      <field name="inherit_id" ref="view_task_kanban"/>
+      <field name="mode">primary</field>
+      <field name="priority" eval="32"/>
+      <field name="arch" type="xml">
+          <kanban default_group_by="stage_id" position="attributes">
+              <attribute name="default_group_by">project_id</attribute>
+          </kanban>
+          <field name="project_id" position="replace">
+          </field>
+      </field>
+  </record> -->
 
-        <record id="open_view_task_issue_form" model="ir.actions.act_window.view">
-            <field name="sequence" eval="2"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="project_task_issue_form"/>
-            <field name="act_window_id" ref="action_view_task_issue"/>
-        </record>
+  <record id="action_view_task_qualify" model="ir.actions.act_window">
+     <field name="name">Qualification</field>
+     <field name="res_model">project.task</field>
+     <field name="view_mode">kanban,tree,form</field>
+     <field name="search_view_id" ref="project.view_task_search_form"/>
+     <field name="domain" eval="[
+          '|',
+          ('project_id', 'in', (ref('project_to_qualify'), ref('project_rejected'),)),
+          '&amp;',
+          ('project_id', 'in', (ref('project_todo_customer'), ref('project_erp_provider'))),
+          ('stage_id', '=', ref('task_type_to_qualify')),
+          ]"/>
+     <field name="context" eval="{'default_project_id': ref('project_to_qualify'), 'search_default_not_finish': True}"/>
+     <field name="help" type="html">
+         <p>
+            Here you can view your issues
+         </p>
+     </field>
+  </record>
 
-       <menuitem action="action_view_task_issue"
-           id="menu_action_view_task_issue"
-           parent="erp_project"
-           sequence="10"/>
+<!--   <record id="open_view_task_qualify_kanban" model="ir.actions.act_window.view">
+      <field name="sequence" eval="0"/>
+      <field name="view_mode">kanban</field>
+      <field name="view_id" ref="view_task_qualify_kanban"/>
+      <field name="act_window_id" ref="action_view_task_qualify"/>
+  </record> -->
 
-        <!-- Project Qualify Kanban View -->
-        <record model="ir.ui.view" id="view_task_qualify_kanban">
-            <field name="model">project.task</field>
-            <field name="inherit_id" ref="view_task_kanban"/>
-            <field name="mode">primary</field>
-            <field name="priority" eval="32"/>
-            <field name="arch" type="xml">
-                <kanban default_group_by="stage_id" position="attributes">
-                    <attribute name="default_group_by">project_id</attribute>
-                </kanban>
-                <field name="project_id" position="replace">
-                </field>
-            </field>
-        </record>
+  <record id="open_view_task_qualify_tree" model="ir.actions.act_window.view">
+      <field name="sequence" eval="1"/>
+      <field name="view_mode">tree</field>
+      <field name="view_id" ref="project.view_task_tree2"/>
+      <field name="act_window_id" ref="action_view_task_qualify"/>
+  </record>
 
-       <record id="action_view_task_qualify" model="ir.actions.act_window">
-           <field name="name">Qualification</field>
-           <field name="res_model">project.task</field>
-           <field name="view_mode">kanban,tree,form</field>
-           <field name="search_view_id" ref="project.view_task_search_form"/>
-           <field name="domain" eval="[
-                '|',
-                ('project_id', 'in', (ref('project_to_qualify'), ref('project_rejected'),)),
-                '&amp;',
-                ('project_id', 'in', (ref('project_todo_customer'), ref('project_erp_provider'))),
-                ('stage_id', '=', ref('task_type_to_qualify')),
-                ]"/>
-           <field name="context" eval="{'default_project_id': ref('project_to_qualify'), 'search_default_not_finish': True}"/>
-           <field name="help" type="html">
-               <p>
-                  Here you can view your issues
-               </p>
-           </field>
-       </record>
-
-        <record id="open_view_task_qualify_kanban" model="ir.actions.act_window.view">
-            <field name="sequence" eval="0"/>
-            <field name="view_mode">kanban</field>
-            <field name="view_id" ref="view_task_qualify_kanban"/>
-            <field name="act_window_id" ref="action_view_task_qualify"/>
-        </record>
-
-        <record id="open_view_task_qualify_tree" model="ir.actions.act_window.view">
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="project.view_task_tree2"/>
-            <field name="act_window_id" ref="action_view_task_qualify"/>
-        </record>
-
-        <record id="open_view_task_qualify_form" model="ir.actions.act_window.view">
-            <field name="sequence" eval="2"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_custom_task_form"/>
-            <field name="act_window_id" ref="action_view_task_qualify"/>
-        </record>
-
-        <menuitem action="action_view_task_qualify"
-            id="menu_action_view_task_qualify"
-            parent="erp_project"
-            groups="group_customer_manager"
-            sequence="20"/>
+<!--   <record id="open_view_task_qualify_form" model="ir.actions.act_window.view">
+      <field name="sequence" eval="2"/>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="view_custom_task_form"/>
+      <field name="act_window_id" ref="action_view_task_qualify"/>
+  </record>
+ -->
+  <menuitem action="action_view_task_qualify"
+      id="menu_action_view_task_qualify"
+      parent="erp_project"
+      groups="group_customer_manager"
+      sequence="20"/>
 
 
-        <!-- Project Task per project Kanban View -->
-        <record model="ir.ui.view" id="view_task_per_project_kanban">
-            <field name="model">project.task</field>
-            <field name="inherit_id" ref="view_task_kanban"/>
-            <field name="mode">primary</field>
-            <field name="priority" eval="32"/>
-            <field name="arch" type="xml">
-                <field name="stage_id" position="replace">
-                    <field name="milestone_id"/>
-                </field>
-                <xpath expr="//div/field[@name='project_id']" position="replace">
-                    <field name="milestone_id"/>
-                </xpath>
-            </field>
-        </record>
+  <!-- Project Task per project Kanban View -->
 
-        <record id="action_view_task_customer" model="ir.actions.act_window">
-            <field name="name">Tache Interne</field>
-            <field name="res_model">project.task</field>
-            <field name="view_mode">kanban,tree,form</field>
-            <field name="search_view_id" ref="project.view_task_search_form"/>
-            <field name="domain" eval="[('project_id', '=', ref('project_todo_customer'))]"/>
-            <field name="context" eval="{'default_project_id': ref('project_todo_customer'), 'color_based_on': 'milestone', 'search_default_not_finish': True}"/>
-            <field name="help" type="html">
-                <p>
-                   Here you can view your task
-                </p>
-            </field>
-        </record>
+<!--   <record model="ir.ui.view" id="view_task_per_project_kanban">
+      <field name="model">project.task</field>
+      <field name="inherit_id" ref="view_task_kanban"/>
+      <field name="mode">primary</field>
+      <field name="priority" eval="32"/>
+      <field name="arch" type="xml">
+          <field name="stage_id" position="replace">
+              <field name="milestone_id"/>
+          </field>
+          <xpath expr="//div/field[@name='project_id']" position="replace">
+              <field name="milestone_id"/>
+          </xpath>
+      </field>
+  </record> -->
 
-        <record id="open_view_task_customer_kanban" model="ir.actions.act_window.view">
-            <field name="sequence" eval="0"/>
-            <field name="view_mode">kanban</field>
-            <field name="view_id" ref="view_task_per_project_kanban"/>
-            <field name="act_window_id" ref="action_view_task_customer"/>
-        </record>
+  <record id="action_view_task_customer" model="ir.actions.act_window">
+      <field name="name">Tache Interne</field>
+      <field name="res_model">project.task</field>
+      <field name="view_mode">kanban,tree,form</field>
+      <field name="search_view_id" ref="project.view_task_search_form"/>
+      <field name="domain" eval="[('project_id', '=', ref('project_todo_customer'))]"/>
+      <field name="context" eval="{'default_project_id': ref('project_todo_customer'), 'color_based_on': 'milestone', 'search_default_not_finish': True}"/>
+      <field name="help" type="html">
+          <p>
+             Here you can view your task
+          </p>
+      </field>
+  </record>
+<!-- 
+  <record id="open_view_task_customer_kanban" model="ir.actions.act_window.view">
+      <field name="sequence" eval="0"/>
+      <field name="view_mode">kanban</field>
+      <field name="view_id" ref="view_task_per_project_kanban"/>
+      <field name="act_window_id" ref="action_view_task_customer"/>
+  </record> -->
 
-        <record id="open_view_task_customer_tree" model="ir.actions.act_window.view">
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="project.view_task_tree2"/>
-            <field name="act_window_id" ref="action_view_task_customer"/>
-        </record>
+  <record id="open_view_task_customer_tree" model="ir.actions.act_window.view">
+      <field name="sequence" eval="1"/>
+      <field name="view_mode">tree</field>
+      <field name="view_id" ref="project.view_task_tree2"/>
+      <field name="act_window_id" ref="action_view_task_customer"/>
+  </record>
 
-        <record id="open_view_task_customer_form" model="ir.actions.act_window.view">
-            <field name="sequence" eval="2"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_custom_task_form"/>
-            <field name="act_window_id" ref="action_view_task_customer"/>
-        </record>
+<!--   <record id="open_view_task_customer_form" model="ir.actions.act_window.view">
+      <field name="sequence" eval="2"/>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="view_custom_task_form"/>
+      <field name="act_window_id" ref="action_view_task_customer"/>
+  </record> -->
 
-        <menuitem action="action_view_task_customer"
-            id="menu_action_view_task_customer"
-            parent="erp_project"
-            groups="group_customer_manager"
-            sequence="30"/>
+  <menuitem action="action_view_task_customer"
+      id="menu_action_view_task_customer"
+      parent="erp_project"
+      groups="group_customer_manager"
+      sequence="30"/>
 
-        <record id="action_view_task_erp_provider" model="ir.actions.act_window">
-            <field name="name">Tache Akretion</field>
-            <field name="res_model">project.task</field>
-            <field name="view_mode">kanban,tree,form</field>
-            <field name="search_view_id" ref="project.view_task_search_form"/>
-            <field name="domain" eval="[('project_id', '=', ref('project_erp_provider'))]"/>
-            <field name="context" eval="{'default_project_id': ref('project_erp_provider'), 'color_based_on': 'milestone', 'search_default_not_finish': True}"/>
-            <field name="help" type="html">
-                <p>
-                  Here you can view your task
-                </p>
-            </field>
-        </record>
+  <record id="action_view_task_erp_provider" model="ir.actions.act_window">
+      <field name="name">Tache Akretion</field>
+      <field name="res_model">project.task</field>
+      <field name="view_mode">kanban,tree,form</field>
+      <field name="search_view_id" ref="project.view_task_search_form"/>
+      <field name="domain" eval="[('project_id', '=', ref('project_erp_provider'))]"/>
+      <field name="context" eval="{'default_project_id': ref('project_erp_provider'), 'color_based_on': 'milestone', 'search_default_not_finish': True}"/>
+      <field name="help" type="html">
+          <p>
+            Here you can view your task
+          </p>
+      </field>
+  </record>
 
-        <record id="open_view_task_erp_provider_kanban" model="ir.actions.act_window.view">
-            <field name="sequence" eval="0"/>
-            <field name="view_mode">kanban</field>
-            <field name="view_id" ref="view_task_per_project_kanban"/>
-            <field name="act_window_id" ref="action_view_task_erp_provider"/>
-        </record>
+<!--   <record id="open_view_task_erp_provider_kanban" model="ir.actions.act_window.view">
+      <field name="sequence" eval="0"/>
+      <field name="view_mode">kanban</field>
+      <field name="view_id" ref="view_task_per_project_kanban"/>
+      <field name="act_window_id" ref="action_view_task_erp_provider"/>
+  </record>
+ -->
+  <record id="open_view_task_erp_provider_tree" model="ir.actions.act_window.view">
+      <field name="sequence" eval="1"/>
+      <field name="view_mode">tree</field>
+      <field name="view_id" ref="project.view_task_tree2"/>
+      <field name="act_window_id" ref="action_view_task_erp_provider"/>
+  </record>
 
-        <record id="open_view_task_erp_provider_tree" model="ir.actions.act_window.view">
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="project.view_task_tree2"/>
-            <field name="act_window_id" ref="action_view_task_erp_provider"/>
-        </record>
+<!--   <record id="open_view_task_erp_provider_form" model="ir.actions.act_window.view">
+      <field name="sequence" eval="2"/>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="view_custom_task_form"/>
+      <field name="act_window_id" ref="action_view_task_erp_provider"/>
+  </record> -->
 
-        <record id="open_view_task_erp_provider_form" model="ir.actions.act_window.view">
-            <field name="sequence" eval="2"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_custom_task_form"/>
-            <field name="act_window_id" ref="action_view_task_erp_provider"/>
-        </record>
+  <menuitem action="action_view_task_erp_provider"
+      id="menu_action_view_task_erp_provider"
+      parent="erp_project"
+      groups="group_customer_manager"
+      sequence="40"/>
 
-        <menuitem action="action_view_task_erp_provider"
-            id="menu_action_view_task_erp_provider"
-            parent="erp_project"
-            groups="group_customer_manager"
-            sequence="40"/>
+  <!-- Project ERP Provider Planning Kanban View -->
+<!--   <record model="ir.ui.view" id="view_task_planning_kanban">
+      <field name="model">project.task</field>
+      <field name="inherit_id" ref="view_task_kanban"/>
+      <field name="mode">primary</field>
+      <field name="priority" eval="32"/>
+      <field name="arch" type="xml">
+          <kanban default_group_by="stage_id" position="attributes">
+              <attribute name="default_group_by">milestone_id</attribute>
+          </kanban>
+          <templates position="before">
+              <field name="stage_id"/>
+          </templates>
+          <xpath expr="//div/field[@name='project_id']" position="replace">
+              <field name="stage_id"/>
+          </xpath>
+      </field>
+  </record> -->
 
-        <!-- Project ERP Provider Planning Kanban View -->
-        <record model="ir.ui.view" id="view_task_planning_kanban">
-            <field name="model">project.task</field>
-            <field name="inherit_id" ref="view_task_kanban"/>
-            <field name="mode">primary</field>
-            <field name="priority" eval="32"/>
-            <field name="arch" type="xml">
-                <kanban default_group_by="stage_id" position="attributes">
-                    <attribute name="default_group_by">milestone_id</attribute>
-                </kanban>
-                <templates position="before">
-                    <field name="stage_id"/>
-                </templates>
-                <xpath expr="//div/field[@name='project_id']" position="replace">
-                    <field name="stage_id"/>
-                </xpath>
-            </field>
-        </record>
+  <record id="action_view_task_planning_erp_provider" model="ir.actions.act_window">
+      <field name="name">Planning Akretion</field>
+      <field name="res_model">project.task</field>
+      <field name="view_mode">kanban,tree,form</field>
+      <field name="search_view_id" ref="project.view_task_search_form"/>
+      <field name="domain" eval="[('project_id', '=', ref('project_erp_provider'))]"/>
+      <field name="context" eval="{'default_project_id': ref('project_erp_provider'), 'color_based_on': 'stage', 'search_default_not_finish': True}"/>
+      <field name="help" type="html">
+          <p>
+            Here you can view your issues
+          </p>
+      </field>
+  </record>
 
-        <record id="action_view_task_planning_erp_provider" model="ir.actions.act_window">
-            <field name="name">Planning Akretion</field>
-            <field name="res_model">project.task</field>
-            <field name="view_mode">kanban,tree,form</field>
-            <field name="search_view_id" ref="project.view_task_search_form"/>
-            <field name="domain" eval="[('project_id', '=', ref('project_erp_provider'))]"/>
-            <field name="context" eval="{'default_project_id': ref('project_erp_provider'), 'color_based_on': 'stage', 'search_default_not_finish': True}"/>
-            <field name="help" type="html">
-                <p>
-                  Here you can view your issues
-                </p>
-            </field>
-        </record>
+<!--   <record id="open_view_task_planning_erp_provider_kanban" model="ir.actions.act_window.view">
+      <field name="sequence" eval="0"/>
+      <field name="view_mode">kanban</field>
+      <field name="view_id" ref="view_task_planning_kanban"/>
+      <field name="act_window_id" ref="action_view_task_planning_erp_provider"/>
+  </record>
+ -->
+  <record id="open_view_task_planning_erp_provider_tree" model="ir.actions.act_window.view">
+      <field name="sequence" eval="1"/>
+      <field name="view_mode">tree</field>
+      <field name="view_id" ref="project.view_task_tree2"/>
+      <field name="act_window_id" ref="action_view_task_planning_erp_provider"/>
+  </record>
 
-        <record id="open_view_task_planning_erp_provider_kanban" model="ir.actions.act_window.view">
-            <field name="sequence" eval="0"/>
-            <field name="view_mode">kanban</field>
-            <field name="view_id" ref="view_task_planning_kanban"/>
-            <field name="act_window_id" ref="action_view_task_planning_erp_provider"/>
-        </record>
+<!--   <record id="open_view_task_planning_erp_provider_form" model="ir.actions.act_window.view">
+      <field name="sequence" eval="2"/>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="view_custom_task_form"/>
+      <field name="act_window_id" ref="action_view_task_planning_erp_provider"/>
+  </record>
+ -->
+  <menuitem action="action_view_task_planning_erp_provider"
+      id="menu_action_view_task_planning_erp_provider"
+      parent="erp_project"
+      groups="group_customer_manager"
+      sequence="50"/>
 
-        <record id="open_view_task_planning_erp_provider_tree" model="ir.actions.act_window.view">
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="project.view_task_tree2"/>
-            <field name="act_window_id" ref="action_view_task_planning_erp_provider"/>
-        </record>
-
-        <record id="open_view_task_planning_erp_provider_form" model="ir.actions.act_window.view">
-            <field name="sequence" eval="2"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_custom_task_form"/>
-            <field name="act_window_id" ref="action_view_task_planning_erp_provider"/>
-        </record>
-
-        <menuitem action="action_view_task_planning_erp_provider"
-            id="menu_action_view_task_planning_erp_provider"
-            parent="erp_project"
-            groups="group_customer_manager"
-            sequence="50"/>
-
-        <!-- Task work view  -->
-
-        <record id="view_task_work_search" model="ir.ui.view">
-            <field name="model">project.task.work</field>
-            <field name="arch" type="xml">
-                <search string="Task work">
-                    <field name="name"/>
-                    <field name="invoice_number"/>
-                    <filter string="To invoice" name="to_invoice" domain="[('invoice_number', '=', False)]"/>
-                    <separator/>
-                    <field name="user_id" string="Done by"/>
-                    <group expand="0" string="Group By">
-                        <filter string="Manager" name="Done by" context="{'group_by':'user_id'}"/>
-                        <filter string="Month" context="{'group_by':'date:month'}" help="Work Date"/>
-                    </group>
-                </search>
-            </field>
-        </record>
-
-        <record id="view_task_work_erp_provider_tree" model="ir.ui.view">
-            <field name="model">project.task.work</field>
-            <field name="arch" type="xml">
-                <tree string="Task Work">
-                    <field name="date"/>
-                    <field name="task_id"/>
-                    <field name="name"/>
-                    <field name="hours" widget="float_time" sum="Worked Time"/>
-                    <field name="user_id" context="{'default_groups_ref': ['base.group_user', 'project.group_project_user']}"/>
-                    <field name="invoice_number"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="action_view_task_work" model="ir.actions.act_window">
-            <field name="name">Time spent</field>
-            <field name="res_model">project.task.work</field>
-            <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="view_task_work_search"/>
-            <field name="domain" eval="[]"/>
-            <field name="context" eval="{'search_default_to_invoice': True}"/>
-            <field name="help" type="html">
-                <p>
-                  Here you can view the time spent on tasks
-                </p>
-            </field>
-        </record>
-
-        <record id="open_view_task_work_tree" model="ir.actions.act_window.view">
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="view_task_work_erp_provider_tree"/>
-            <field name="act_window_id" ref="action_view_task_work"/>
-        </record>
-
-        <record id="open_view_task_work_form" model="ir.actions.act_window.view">
-            <field name="sequence" eval="2"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="project.view_task_work_form"/>
-            <field name="act_window_id" ref="action_view_task_work"/>
-        </record>
-
-        <menuitem action="action_view_task_work"
-            id="menu_action_view_task_work"
-            parent="erp_project"
-            groups="group_customer_manager"
-            sequence="60"/>
-    </data>
-</openerp>
+</odoo>

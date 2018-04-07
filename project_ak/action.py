@@ -2,8 +2,8 @@
 # © 2015 Benoît Guillot @ Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import api, models, _
-from openerp.addons.project_model_to_task.action import UNIQUE_ACTION_ID
+from odoo import api, models
+from odoo.addons.project_model_to_task.models.action import UNIQUE_ACTION_ID
 
 
 class IrValues(models.Model):
@@ -14,8 +14,8 @@ class IrValues(models.Model):
         """ Remove if user doesn't have rights """
         res = super(IrValues, self).get_actions(
             action_slot, model, res_id=res_id)
-        if (action_slot == 'client_action_multi'
-                and not self.env['res.users'].browse(self._uid).has_group(
+        if (action_slot == 'client_action_multi' and
+                not self.env['res.users'].browse(self._uid).has_group(
                     'project_ak.group_customer_user')):
             action = self.set_task_action(model, res_id=res_id)
             if action:

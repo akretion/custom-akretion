@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<openerp>
-    <data noupdate="0">
+<odoo>
 
 <!--Task Types-->
 <record id="task_type_to_qualify" model="project.task.type">
@@ -56,20 +55,33 @@
 
 <!-- Sequences -->
 
-<record id="seq_type_project_task_issue" model="ir.sequence.type">
-    <field name="name">Project Task Issue</field>
-    <field name="code">project.task.issue</field>
-</record>
-
 <record id="seq_project_task_issue" model="ir.sequence">
     <field name="name">Project Task Issue</field>
     <field name="code">project.task.issue</field>
-    <field name="prefix">ISSUE-</field>
+    <field name="prefix">Incident </field>
     <field name="padding">0</field>
     <field name="company_id" eval="False"/>
 </record>
 
 <!-- Projects -->
+
+<record id="project_erp_improvement" model="project.project">
+    <field name="name">ERP Project</field>
+    <field name="active" eval="True"/>
+    <field name="state">open</field>
+    <field name="type_ids" eval="[(6, 0, [
+        ref('task_type_to_qualify'),
+        ref('task_type_planned'),
+        ref('task_type_in_progress'),
+        ref('task_type_in_test'),
+        ref('task_type_done'),
+        ref('task_type_cancel'),
+        ])]"/>
+    <field name="use_tasks" eval="1"/>
+</record>
+
+
+<!-- OTHER PROJECT ARE NOW DEPRECATED -->
 
 <record id="project_to_qualify" model="project.project">
     <field name="name">A qualifier</field>
@@ -119,5 +131,5 @@
     <field name="use_tasks" eval="1"/>
 </record>
 
-    </data>
-</openerp>
+
+</odoo>

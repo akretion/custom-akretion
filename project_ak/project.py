@@ -1,27 +1,9 @@
-# -*- coding: utf-8 -*-
-##############################################################################
-#
+# coding: utf-8
 #    Copyright (C) 2015-TODAY Akretion (http://www.akretion.com)
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import fields, api, models
-from openerp.osv import fields as oldfields
-from openerp.exceptions import Warning as UserError
-from openerp.tools.translate import _
+from odoo import fields, api, models, _
+from odoo.exceptions import UserError
 
 
 ISSUE_DESCRIPTION = u"""Ce qui ne va pas:
@@ -37,8 +19,7 @@ class ProjectProject(models.Model):
     _inherit = 'project.project'
 
     issue_sequence_id = fields.Many2one(
-        'ir.sequence',
-        string='Issue sequence',
+        comodel_name='ir.sequence', string='Issue sequence',
         domain=[('code', '=', 'project.task.issue')])
 
 
@@ -51,41 +32,37 @@ class ProjectTask(models.Model):
                                compute='_compute_display_name')
     contact_mobile = fields.Char(string='Mobile', related='create_uid.mobile')
     contact_email = fields.Char(string='Email', related='create_uid.email')
+    color = fields.Integer(string='Color', compute='_compute_color')
 
-    def _get_color(self, cr, uid, ids, field_name, args, context=None):
+    @api.depends('color')
+    def _compute_color(self):
         result = {}
-        for task in self.browse(cr, uid, ids, context=context):
-            if context.get('color_based_on') == 'milestone':
+        for task in self:
+            if self.env.context.get('color_based_on') == 'milestone':
                 result[task.id] = task.milestone_id.color
-            elif context.get('color_based_on') == 'stage':
+            elif self.env.context.get('color_based_on') == 'stage':
                 result[task.id] = task.stage_id.color
             else:
                 result[task.id] = 0
         return result
 
-    # Inheriting with new api seem not working...
-    _columns = {
-        'color': oldfields.function(_get_color, string='color', type='integer'),
-        }
-
     @api.multi
     def _read_group_stage_ids(self, domain, read_group_order=None,
                               access_rights_uid=None):
-        if self._context.get('visible_project_ids'):
-            project_ids = self._context['visible_project_ids']
+        if self.env.context.get('visible_project_ids'):
+            project_ids = self.env.context['visible_project_ids']
         else:
-            project_ids = self._resolve_project_id_from_context()
+            project_ids = self._resolve_project_id_fromenv.context()
         if not project_ids:
-           return super(ProjectTask, self)._read_group_stage_ids(
-                domain,
-                read_group_order=read_group_order,
+            return super(ProjectTask, self)._read_group_stage_ids(
+                domain, read_group_order=read_group_order,
                 access_rights_uid=access_rights_uid)
         else:
             # TODO impmement access_right_uid
             stage_obj = self.env['project.task.type']
             order = stage_obj._order
             if read_group_order == 'stage_id desc':
-               order = '%s desc' % order
+                order = '%s desc' % order
             stages = stage_obj.search([
                 ('project_ids', 'in', project_ids),
                 ], order=order)
@@ -115,7 +92,7 @@ class ProjectTask(models.Model):
 
     @api.multi
     def _read_group_milestone_ids(self, domain, read_group_order=None,
-                                access_rights_uid=None):
+                                  access_rights_uid=None):
         fold = {}
         result = []
         milestones = self.env['project.milestone'].search([])
@@ -145,7 +122,7 @@ class ProjectTask(models.Model):
     @api.model
     def default_get(self, fields):
         vals = super(ProjectTask, self).default_get(fields)
-        if 'from_action' in self._context:
+        if 'from_action' in self.env.context:
             project_to_qualify = self.env.ref('project_ak.project_to_qualify')
             vals['project_id'] = project_to_qualify.id
             vals['description'] = ISSUE_DESCRIPTION
@@ -161,9 +138,9 @@ class ProjectTask(models.Model):
 
     @api.multi
     def write(self, vals):
-        if (vals.get('stage_id')
-                and not self.env['res.users']\
-                    .has_group('project_ak.group_customer_manager')):
+        if (vals.get('stage_id') and
+                not self.env['res.users'].has_group(
+                    'project_ak.group_customer_manager')):
             raise UserError(_('You can not change the state of the task'))
 
         if vals.get('project_id'):
@@ -194,8 +171,8 @@ class ProjectTaskType(models.Model):
     color = fields.Integer()
 
 
-class ProjectTaskWork(models.Model):
-    _inherit = "project.task.work"
+# class ProjectTaskWork(models.Model):
+#     _inherit = "project.task.work"
 
-    date = fields.Date(default=fields.Date.today())
-    invoice_number = fields.Char()
+#     date = fields.Date(default=fields.Date.today())
+#     invoice_number = fields.Char()
