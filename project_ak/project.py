@@ -34,7 +34,6 @@ class ProjectTask(models.Model):
     # contact_email = fields.Char(string='Email', related='create_uid.email')
     color = fields.Integer(string='Color', compute='_compute_color')
 
-    @api.depends('color')
     def _compute_color(self):
         result = {}
         for task in self:
