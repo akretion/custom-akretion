@@ -6,12 +6,10 @@ from odoo import fields, api, models, _
 from odoo.exceptions import UserError
 
 
-ISSUE_DESCRIPTION = u"""Ce qui ne va pas:
----------------------------
-
-
-Voilà comment cela devrait fonctionner:
------------------------------------------------------------
+ISSUE_DESCRIPTION = u"""<h3>Ce qui ne va pas:</h3>
+<br/>
+<h3>Voilà comment je pense qu'on peut améliorer les choses:</h3>
+<br/>
 """
 
 
