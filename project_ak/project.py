@@ -45,32 +45,32 @@ class ProjectTask(models.Model):
                 result[task.id] = 0
         return result
 
-    @api.multi
-    def _read_group_stage_ids(self, domain, read_group_order=None,
-                              access_rights_uid=None):
-        if self.env.context.get('visible_project_ids'):
-            project_ids = self.env.context['visible_project_ids']
-        else:
-            project_ids = self._resolve_project_id_fromenv.context()
-        if not project_ids:
-            return super(ProjectTask, self)._read_group_stage_ids(
-                domain, read_group_order=read_group_order,
-                access_rights_uid=access_rights_uid)
-        else:
-            # TODO impmement access_right_uid
-            stage_obj = self.env['project.task.type']
-            order = stage_obj._order
-            if read_group_order == 'stage_id desc':
-                order = '%s desc' % order
-            stages = stage_obj.search([
-                ('project_ids', 'in', project_ids),
-                ], order=order)
-            fold = {}
-            result = []
-            for stage in stages:
-                fold[stage.id] = stage.fold or False
-                result.append((stage.id, stage.name))
-            return result, fold
+    # @api.multi
+    # def _read_group_stage_ids(self, domain, read_group_order=None,
+    #                           access_rights_uid=None):
+    #     if self.env.context.get('visible_project_ids'):
+    #         project_ids = self.env.context['visible_project_ids']
+    #     else:
+    #         project_ids = self._resolve_project_id_fromenv.context()
+    #     if not project_ids:
+    #         return super(ProjectTask, self)._read_group_stage_ids(
+    #             domain, read_group_order=read_group_order,
+    #             access_rights_uid=access_rights_uid)
+    #     else:
+    #         # TODO impmement access_right_uid
+    #         stage_obj = self.env['project.task.type']
+    #         order = stage_obj._order
+    #         if read_group_order == 'stage_id desc':
+    #             order = '%s desc' % order
+    #         stages = stage_obj.search([
+    #             ('project_ids', 'in', project_ids),
+    #             ], order=order)
+    #         fold = {}
+    #         result = []
+    #         for stage in stages:
+    #             fold[stage.id] = stage.fold or False
+    #             result.append((stage.id, stage.name))
+    #         return result, fold
 
     @api.multi
     def _read_group_project_ids(self, domain, read_group_order=None,
@@ -78,7 +78,7 @@ class ProjectTask(models.Model):
         fold = {}
         result = []
         xml_ids = [
-            'project_to_qualify',
+            'project_erp_improvement',
             'project_todo_customer',
             'project_erp_provider',
             'project_rejected',
@@ -101,7 +101,7 @@ class ProjectTask(models.Model):
         return result, fold
 
     _group_by_full = {
-        'stage_id': _read_group_stage_ids,
+        # 'stage_id': _read_group_stage_ids,
         'project_id': _read_group_project_ids,
         'milestone_id': _read_group_milestone_ids,
     }
@@ -113,7 +113,7 @@ class ProjectTask(models.Model):
             if not task.project_id:
                 continue
             sequence = task.project_id.issue_sequence_id
-            project_issue = self.env.ref('project_ak.project_to_qualify')
+            project_issue = self.env.ref('project_ak.project_erp_improvement')
             if task.project_id == project_issue and \
                     not task.issue_number and sequence:
                 task.issue_number = sequence_obj.next_by_id(sequence.id)
@@ -122,8 +122,9 @@ class ProjectTask(models.Model):
     def default_get(self, fields):
         vals = super(ProjectTask, self).default_get(fields)
         if 'from_action' in self.env.context:
-            project_to_qualify = self.env.ref('project_ak.project_to_qualify')
-            vals['project_id'] = project_to_qualify.id
+            project_erp_improvement = self.env.ref(
+                'project_ak.project_erp_improvement')
+            vals['project_id'] = project_erp_improvement.id
             vals['description'] = ISSUE_DESCRIPTION
             vals['user_id'] = None
             vals['create_uid'] = self._uid
